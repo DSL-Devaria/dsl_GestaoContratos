@@ -1,0 +1,6 @@
+.wrapper {
+    border-bottom: solid .2rem  #ccc;
+    margin-bottom: 0.5rem;
+    color: rgb(66, 140, 209);   
+    text-align:right;
+}

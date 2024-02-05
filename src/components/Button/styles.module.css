@@ -1,0 +1,19 @@
+.wrapper{
+    background: rgb(66, 140, 209);
+    background: linear-gradient(45deg, rgb(30, 112, 189) 10%, rgb(124, 212, 235) 100%);
+    border-radius: .75rem;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 700;
+    padding: .625rem;
+    margin-top:.625rem;
+    margin-bottom:.625rem ;
+    text-decoration: none;
+    border:none;
+    transition: .2s;
+    width: 100%;
+    
+  }
+  .wrapper:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  }
