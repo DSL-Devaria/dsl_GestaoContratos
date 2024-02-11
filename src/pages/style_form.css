@@ -45,3 +45,11 @@
    color: #ccc;
    /* Alterar cor do link enquanto clicado */
 }
+
+ .errado{
+   border: 1px solid #f64348;
+}
+
+.certo{
+   border: 1px solid #00ff9f;
+}
