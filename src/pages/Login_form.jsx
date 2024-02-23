@@ -1,12 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState,useContext } from 'react'
 import Input from '../components/form/input'
 import Button from '../components/Button'
 import ProfileSection from '../components/ProfileSection/ProfileSection'
 import { Link } from 'react-router-dom'
+import { LoginServices } from '../services/LoginServices';
+import { AuthorizeContext } from '../App';
+
+const loginServices = new LoginServices();
 
 function Login() {
+
+    const {setToken} = useContext(AuthorizeContext);
+
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
+    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({
         email: '',
         senha: ''
@@ -17,25 +25,47 @@ function Login() {
         return emailRegex.test(email)
     }
 
-    function aoClicar() {
+    async function aoClicar() {
+        try{
         const newErrors = {};
+        setErrors('');
 
         if (!email || !validarEmail(email)) {
             newErrors.email = "Por favor, insira um e-mail válido."
         }
 
-        if (!senha || senha.length < 6) {
+        if (!senha || senha.length < 5) {
             newErrors.senha = "A senha deve ter pelo menos 6 caracteres."
         }
 
-        setErrors(newErrors);
+        if(Object.keys(newErrors).length != 0){
 
+            return setErrors(newErrors);
+        }
+        /*
         if (Object.keys(newErrors).length === 0) {
             console.log("E-mail:", email);
             console.log("Senha:", senha);
         } else {
             console.log("Por favor, corrija os erros antes de prosseguir.")
         }
+        */
+        setLoading(true);
+       await loginServices.login({
+        login:email,
+        senha},setToken);
+        setLoading(false);
+       }catch(e){
+        console.log('Erro ao efetuar login:', e);
+            
+            if (e?.response?.data?.message) {
+                return setErrors(e?.response?.data?.message);
+            } else {
+                return setErrors("Não foi possível efetuar o login, tente novamente!");
+            }
+       }
+
+
     }
 
     function primeiraMensagemErro() {
@@ -76,7 +106,7 @@ function Login() {
                     value={senha}
                     errorMessage={errors.senha}
                 />
-                <Button onClick={aoClicar}>Login</Button>
+                <Button onClick={aoClicar} disabled={loading}>Login</Button>
                 <p>
                     <Link to="/Cadastro" className='link'>Não tem cadastro? Cadastre-se</Link>
                 </p>
