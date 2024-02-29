@@ -4,13 +4,17 @@ import './style_form.css';
 import Button from '../components/Button';
 import '../styles/globals.css';
 import ProfileSection from '../components/ProfileSection/ProfileSection';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { RegisterServices } from '../services/RegisterServices';
+
+const registerServices = new RegisterServices();
 
 function Cadastro() {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [confirmarSenha, setConfirmarSenha] = useState('');
+    const [loading, setLoading] = useState(false);
     const [link, setLink] = useState('');
     const [errors, setErrors] = useState({
         nome: '',
@@ -20,7 +24,11 @@ function Cadastro() {
         link: '',
     });
 
-    function aoClicar() {
+    const navigate = useNavigate();
+
+    async function aoClicar() {
+        try{
+            setErrors('');
         const newErrors = {};
 
         if (!nome || nome.length < 2) {
@@ -44,16 +52,42 @@ function Cadastro() {
             newErrors.link = "Por favor, insira um link.";
         }
 
-        setErrors(newErrors);
+        if (Object.keys(newErrors).length != 0) {
+            return setErrors(newErrors);
+        }
+
+        setLoading(true);
+
+            const body = { 
+                nome, 
+                email,
+                senha,
+                autentique: link
+            };
+
+            await registerServices.register(body);
+            await l
+            setLoading(false);
+            return navigate('/')
+        } catch (e) {
+            console.log('Erro ao efetuar cadastro:', e);
+            setLoading(false);
+            if (e?.response?.data?.message) {
+                return setErrors(e?.response?.data?.message);
+            }
+            return setErrors('Erro ao efetuar Cadastro, tente novamente');
+        }
+
+
 
         // Se não houver erros, você pode prosseguir com o envio do formulário
-        if (Object.keys(newErrors).length === 0) {
+       /* if (Object.keys(newErrors).length === 0) {
             // Aqui você pode chamar uma função para enviar os dados do formulário
             console.log("Formulário válido. Enviar dados...");
         } else {
             console.log("Formulário inválido. Corrija os erros.");
         }
-
+*/
 
     }
 
@@ -143,7 +177,7 @@ function Cadastro() {
                         errorMessage={errors.link} // Adicionei errorMessage para mostrar os erros
                     />
            
-                    <Button onClick={aoClicar}>Cadastrar</Button>
+                    <Button onClick={aoClicar} disabled={loading}>Cadastrar</Button>
                     <p><Link to="/" className='link'>Já registrado? Conecte-se</Link></p>
                 </div>
             </div>

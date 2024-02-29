@@ -1,13 +1,18 @@
-import Login from './pages/Login_form'
-import './pages/style_form.css'
-import { Outlet } from 'react-router-dom'
+import { createContext, useState } from "react";
+import { RouterProvider } from "react-router-dom";
+import { getRouter } from "./router";
 
-function App() {
-  return (
-    <>
-    <Outlet/>
-    </>
-  )
+export const AuthorizeContext = createContext(null);
+
+export const App = () => {
+    const [token, setToken] = useState(localStorage.getItem('token') || '');
+
+
+    return (
+        <AuthorizeContext.Provider
+            value={{ token, setToken }}
+        >
+            <RouterProvider router={getRouter(token)} />
+        </AuthorizeContext.Provider>
+    );
 }
-
-export default App
