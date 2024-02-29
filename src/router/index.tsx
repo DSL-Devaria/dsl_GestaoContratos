@@ -26,11 +26,6 @@ export const getRouter = (token: string) => {
                 id: 'home',
                 element: <Home />,
             },
-            {
-                path: '/documentos',
-                id: 'documentos',
-                element: <Documentos />
-            },
             
         ];
     
